@@ -4,7 +4,11 @@ RUN apt-get update \
     && apt-get install -y build-essential git clang libasound2-dev \
     libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev \
     libxcursor-dev libxinerama-dev xxd libglfw3-dev mingw-w64 mingw-w64-tools \
-    pandoc zip wget imagemagick chicken-bin
+    pandoc zip wget imagemagick chicken-bin \
+    texlive-base texlive-binaries texlive-fonts-recommended \
+    texlive-latex-base texlive-latex-extra texlive-latex-recommended \
+    texlive-luatex texlive-pictures texlive-plain-generic \
+    texlive-xetex
 
 RUN git clone --branch 4.5.0 --depth 1 https://github.com/raysan5/raylib
 WORKDIR "/raylib/src"
@@ -21,19 +25,21 @@ RUN  chicken-install -from-list dependencies.txt \
 
 WORKDIR "/"
 
-RUN git clone https://git.krzysckh.org/kpm/science-cup-2023
-WORKDIR "/science-cup-2023"
+RUN git clone https://github.com/krzysckh/msc2023
+WORKDIR "/msc2023"
 RUN make
 RUN cp main ../msc2023-lambda-optyka-linux-x86_64
 RUN make build-windows WINDRES=llvm-windres-14
 RUN cp rl-optyka-test.exe ../msc2023-lambda-optyka-win64.exe
-RUN apt-get install -y texlive-base texlive-binaries texlive-fonts-recommended \
-    texlive-latex-base texlive-latex-extra texlive-latex-recommended \
-    texlive-luatex texlive-pictures texlive-plain-generic \
-    texlive-xetex
 RUN mkdir -p /usr/share/fonts \
     && wget https://pub.krzysckh.org/_fonts/lg/LucidaGrande-Regular.otf \
       -O /usr/share/fonts/LucidaGrande-Regular.otf \
+    && wget https://pub.krzysckh.org/_fonts/lg/LucidaGrande-Bold.otf \
+      -O /usr/share/fonts/LucidaGrande-Bold.otf \
+    && wget https://pub.krzysckh.org/_fonts/lg/LucidaGrande-Italic.otf \
+      -O /usr/share/fonts/LucidaGrande-Italic.otf \
+    && wget https://pub.krzysckh.org/_fonts/lg/LucidaGrande-BoldItalic.otf \
+      -O /usr/share/fonts/LucidaGrande-BoldItalic.otf \
     && wget https://pub.krzysckh.org/_fonts/Apl385.ttf \
       -O /usr/share/fonts/Apl385.ttf \
     && fc-cache -fv
